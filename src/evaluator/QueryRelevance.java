@@ -9,11 +9,12 @@ import java.util.Vector;
 
 public class QueryRelevance {
 
+	//atributos
 	private String query;
 	private Vector<Integer> HighlyRelevantDocs;
 	private Vector<Integer> PartiallyRelevantDocs;
 	private Vector<Integer> IrrelevantDocs;
-
+	
 
 	public QueryRelevance(String query) {
 		super();
