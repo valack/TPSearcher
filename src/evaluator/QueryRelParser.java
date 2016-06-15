@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Vector;
 
 
 
@@ -17,7 +18,7 @@ public class QueryRelParser {
 		this.setQueryRelDataPath(queryRelDataPath);
 	}
 
-	public QueryRelJudgements parse() throws IOException {
+	public Vector<QueryRelevance> parse() throws IOException {
 
 		FileReader fileToRead = new FileReader(queryRelDataPath);
 		BufferedReader buffer = new BufferedReader(fileToRead);
@@ -25,7 +26,7 @@ public class QueryRelParser {
 		try {
 			String line = "";
 			QueryRelevance query = null;
-			QueryRelJudgements qrJudgements = new QueryRelJudgements();
+			Vector<QueryRelevance> qrJudgements = new Vector<QueryRelevance>();
 
 			while (	buffer.ready()	) {
 				//ciclo por todo el archivo
@@ -44,7 +45,7 @@ public class QueryRelParser {
 						
 						//query nuevo en la lista, agrego el viejo y creo uno nuevo
 						
-						qrJudgements.addQueryRel(query);
+						qrJudgements.add(query);
 						int queryStart = line.indexOf(">") + 1;
 						int queryEnd = line.lastIndexOf("<");
 						String queryName = line.substring(queryStart, queryEnd);

@@ -1,9 +1,11 @@
 package Searcher;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 
 /***
@@ -16,17 +18,19 @@ public class main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String xmlPath="E:\\Juan\\Facultad\\Optativas\\Analisis y Rec de Info\\Forum_Data\\All";
-		String indexPath="E:\\Juan\\Facultad\\Optativas\\Analisis y Rec de Info\\index";
+		String xmlPath="F:\\Facultad\\Optativas\\Analisis y recuperacion de informacion\\Forum_Data\\All";
+		String indexPath="index";
 		
 		//Creacion del indice a partir del dataset
-	/*	Indexer indexer = new Indexer();
-		indexer.index(xmlPath,indexPath);*/
+		Indexer indexer = new Indexer();
+		indexer.index(xmlPath,indexPath);
 		
 		//Creacion de los queries
 		//Query q=new TermQuery(new Term("Content", "Ubuntu"));
 		QueryParser p= new QueryParser("Content", new StandardAnalyzer());
 		Query q=null;
+		q = new TermQuery(new Term("contents", "lucene"));
+		//TopDocs hits = is.search(q);
 		try {
 			q = p.parse("virtualbox keyboard problem");
 		} catch (ParseException e) {
@@ -40,6 +44,8 @@ public class main {
 		
 		//Busqueda a partir del indice
 		Searcher searcher = new Searcher();
+		//TopDocs hits = searcher.search(indexPath, 100,q);
+		
 		TopDocs hits = searcher.search(indexPath, 100,q);
 		
 		System.out.println("Busqueda terminada");

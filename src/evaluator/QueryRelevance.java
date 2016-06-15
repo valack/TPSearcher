@@ -10,7 +10,7 @@ import java.util.Vector;
  *	irrelevantes (valor 0)
  */
 
-public class QueryRelevance extends AbsQueryRelevance{
+public class QueryRelevance {
 
 	//atributos
 	private String query;
@@ -45,13 +45,6 @@ public class QueryRelevance extends AbsQueryRelevance{
 			HighlyRelevantDocs.add(docId);
 			break;
 		}
-	}
-	
-	@Override
-	public QueryRelevance getQueryRelevance(String query) {
-		if (this.query.equals(query))
-			return this;
-		return null;
 	}
 	
 	public int getDocRelevance(int docId)	{ 
