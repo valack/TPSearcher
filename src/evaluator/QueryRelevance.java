@@ -3,11 +3,11 @@ package evaluator;
 import java.util.Vector;
 
 /**
- * @author Toshiba
+ * @author Valacco
  *
  */
 
-public class QueryRelevance {
+public class QueryRelevance extends AbsQueryRelevance{
 
 	//atributos
 	private String query;
@@ -41,10 +41,14 @@ public class QueryRelevance {
 			break;
 		}
 	}
-
-	public String getQuery() {
-		return query;
+	
+	@Override
+	public QueryRelevance getQueryRelevance(String query) {
+		if (this.query.equals(query))
+			return this;
+		return null;
 	}
+
 	public void setQuery(String query) {
 		this.query = query;
 	}
@@ -72,5 +76,6 @@ public class QueryRelevance {
 	public void setIrrelevantDocs(Vector<Integer> irrelevantDocs) {
 		IrrelevantDocs = irrelevantDocs;
 	}
+
 
 }
