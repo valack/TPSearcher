@@ -5,8 +5,14 @@ import java.util.Vector;
 public class QueryRelJudgements extends AbsQueryRelevance {  
 
 	private Vector<QueryRelevance> queryRelData;
-
 	
+	
+	
+	public QueryRelJudgements() {
+		super();
+		queryRelData = new Vector<QueryRelevance>();
+	}
+
 	public void addQueryRel(QueryRelevance qr) {
 		queryRelData.addElement(qr);
 	}
@@ -24,10 +30,6 @@ public class QueryRelJudgements extends AbsQueryRelevance {
 	
 	public Vector<QueryRelevance> getQueryRelData() {
 		return queryRelData;
-	}
-
-	public void setQueryRelData(Vector<QueryRelevance> queryRelData) {
-		this.queryRelData = queryRelData;
 	}
 	
 }

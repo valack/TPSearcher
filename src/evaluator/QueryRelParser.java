@@ -32,24 +32,28 @@ public class QueryRelParser {
 
 				line = buffer.readLine();
 				if (line.startsWith("<Query>"))	{
-					if (query == null)	
+					if (query == null)	{
 						
 						//primer caso
-						
-						query = new QueryRelevance((String) line.subSequence(line.indexOf("<Query>"), 
-								line.indexOf("</Query>)")));
+						int queryStart = line.indexOf(">") + 1;
+						int queryEnd = line.lastIndexOf("<");
+						String queryName = line.substring(queryStart, queryEnd);
+						query = new QueryRelevance(queryName);
+					}
 					else	{			
 						
 						//query nuevo en la lista, agrego el viejo y creo uno nuevo
 						
 						qrJudgements.addQueryRel(query);
-						query = new QueryRelevance((String) line.subSequence(line.indexOf("<Query>"), 
-								line.indexOf("</Query>)")));
+						int queryStart = line.indexOf(">") + 1;
+						int queryEnd = line.lastIndexOf("<");
+						String queryName = line.substring(queryStart, queryEnd);
+						query = new QueryRelevance(queryName);
 					}
 				}
 				else	{ 
-					Integer docRel = Integer.parseInt(line.substring(line.length()-1));
 					Integer docId = Integer.parseInt(line.substring(0, line.indexOf(" ")));
+					Integer docRel = Integer.parseInt(line.substring(line.indexOf(" ") + 1));
 					query.addDoc(docId, docRel);
 				}
 			}
