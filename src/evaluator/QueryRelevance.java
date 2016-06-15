@@ -4,13 +4,18 @@ import java.util.Vector;
 
 /**
  * @author Valacco
- *
+ *	Se tiene un query con los documentos relevantes divididos en categorias:
+ *	muy relevantes (valor 2)
+ *	Parcialmente relevantes (valor 1)
+ *	irrelevantes (valor 0)
  */
 
 public class QueryRelevance extends AbsQueryRelevance{
 
 	//atributos
 	private String query;
+	
+
 	private Vector<Integer> HighlyRelevantDocs;
 	private Vector<Integer> PartiallyRelevantDocs;
 	private Vector<Integer> IrrelevantDocs;
@@ -48,34 +53,31 @@ public class QueryRelevance extends AbsQueryRelevance{
 			return this;
 		return null;
 	}
-
-	public void setQuery(String query) {
-		this.query = query;
+	
+	public int getDocRelevance(int docId)	{ 
+		if (HighlyRelevantDocs.contains(docId))
+			return 2;
+		else
+			if (PartiallyRelevantDocs.contains(docId))
+				return 1;
+			else
+				return 0;
+	}
+	
+	public String getQuery() {
+		return query;
 	}
 
 	public Vector<Integer> getHighlyRelevantDocs() {
 		return HighlyRelevantDocs;
 	}
 
-	public void setHighlyRelevantDocs(Vector<Integer> highlyRelevantDocs) {
-		HighlyRelevantDocs = highlyRelevantDocs;
-	}
-
 	public Vector<Integer> getPartiallyRelevantDocs() {
 		return PartiallyRelevantDocs;
-	}
-
-	public void setPartiallyRelevantDocs(Vector<Integer> partiallyRelevantDocs) {
-		PartiallyRelevantDocs = partiallyRelevantDocs;
 	}
 
 	public Vector<Integer> getIrrelevantDocs() {
 		return IrrelevantDocs;
 	}
-
-	public void setIrrelevantDocs(Vector<Integer> irrelevantDocs) {
-		IrrelevantDocs = irrelevantDocs;
-	}
-
 
 }
