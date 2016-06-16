@@ -3,58 +3,28 @@ package evaluator;
 import java.io.IOException;
 import java.util.Vector;
 
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
 
+import Searcher.Searcher;
+/****
+ *  Evaluador de metricas
+ * @author Valacco
+ *
+ */
 
 public class Evaluator {
 
-
-/*	
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-		try {
-/**
-	 * Teniendo cargados los documentos con sus relevancias para cada consulta puedo comparar
-	 * con el resultado de nuestro buscador y asi obtener las metricas.
-**/
-
-
-
-/*
-				FOR DEBUG
-				
-			 for (QueryRelevance query : parser.parse()) {
-				System.out.println("Query: " + query.getQuery());
-				for (Integer docId : query.getHighlyRelevantDocs()) {
-					System.out.println("Documento muy relevante: " + docId);
-				}
-				for (Integer docId : query.getPartiallyRelevantDocs()) {
-					System.out.println("Documento parcialmente relevante: " + docId);
-				}
-				for (Integer docId : query.getIrrelevantDocs()) {
-					System.out.println("Documento irrelevante: " + docId);
-				}
-			}
-
-
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			System.out.println("Se rompio al toque");
-			e.printStackTrace();
-		}
-
-	}
-*/
-	private int recall10k;
-	private int precision10k;
-	private int ndcg;
+	private Float recall10k;
+	private Float precision10k;
+	private Float ndcg;
 	private Vector<QueryRelevance> relevanceData;
 
 	public Evaluator(String dataComparationPath) throws IOException	{
-		recall10k = -1;
-		precision10k = -1;
-		ndcg = -1;
+		recall10k = (float) -1;
+		precision10k = (float) -1;
+		ndcg = (float) -1;
 		QueryRelParser parser = new QueryRelParser(dataComparationPath);//"Forum_Data\\queryRelJudgements"
 		relevanceData = parser.parse();
 	}
@@ -70,57 +40,71 @@ public class Evaluator {
 	/**
 	 * Hay que chequear si vamos a tener relevantes e irrelevantes nomas.. o vamos a tener las tres clases
 	 */
-	
-	public void calculateRecall10k(String query, Vector<Integer> retrievedDocs)	{
+
+	public void calculateRecall10k(String query, TopDocs retrievedDocs, Searcher search)	{
+		/**
+		 * Tomo como relevantes tanto los parciales como los totalmente relevantes.
+		 * Por cada ScoreDoc dentro de los TopDocs pregunto si el query contiene ese documento entre parcialtes 
+		 * y totalmente relevantes y si es cierto aumento el contador.
+		 * devuelvo la cantidad de documentos relevantes en la busqueda sobre la cantidad de documentos relevantes
+		 * que tiene el query. 
+		 * 
+		 * DUDA: si limito el TopDocs para que me devuelva los 10 primeros y el query tiene mas de 10 relevantes, 
+		 * deberia tomar como cota 10? porque si el query tiene 23 relevantes, por ejemplo, cuando lo divida por ese
+		 * numero me achica bastante el recall, aunque quizas en el TopDocs sean todos relevantes (10/23)
+		 */
+		float recall = 0;
 		QueryRelevance q = getQuery(query);
-		for (Integer docId : retrievedDocs) {
-			if (q.getHighlyRelevantDocs().contains(docId)	)	
-				recall10k++;
+		float relevantDocs = q.getHighlyRelevantDocs().size() + q.getPartiallyRelevantDocs().size();
+		for (ScoreDoc sd : retrievedDocs.scoreDocs) {
+			if (	q.getHighlyRelevantDocs().contains(Integer.parseInt(search.doc(sd.doc).get("ThreadID")))
+					|| q.getPartiallyRelevantDocs().contains(Integer.parseInt(search.doc(sd.doc).get("ThreadID")))	)	
+				recall++;
 		}
-		recall10k /= 10;
-	}
-	
-	public void calculatePrecision10k(String query, Vector<Integer> retrievedDocs)	{
-		QueryRelevance q = getQuery(query);
-		for (Integer docId : retrievedDocs) {
-			if (q.getIrrelevantDocs().contains(docId) || q.getPartiallyRelevantDocs().contains(docId))	
-				precision10k++;
-		}
-		precision10k /= 10;
-	}
-	
-	public void calculateNDCG(String query, Vector<Integer> retrievedDocs)	{
-	
+		recall10k = (float) recall/relevantDocs;
 	}
 
+	public void calculatePrecision10k(String query, TopDocs retrievedDocs, Searcher search)	{
+		/**
+		 * Es similar al anterior pero la unica diferencia es que divido la cantidad de documentos relevantes 
+		 * de la busqueda por la cantidad de documentos recuperados (en este caso son 10 TopDocs)
+		 */
+		float precision = 0;
+		QueryRelevance q = getQuery(query);
+		for (ScoreDoc sd : retrievedDocs.scoreDocs) {
+			if (	q.getHighlyRelevantDocs().contains(Integer.parseInt(search.doc(sd.doc).get("ThreadID")))
+					|| q.getPartiallyRelevantDocs().contains(Integer.parseInt(search.doc(sd.doc).get("ThreadID")))	 )
+				precision++;
+		}
+		precision10k = (float) precision/retrievedDocs.scoreDocs.length;
+	}
 
-	public int getRecall10k() {
+	public void calculateNDCG(String query, TopDocs retrievedDocs)	{
+		
+	}
+
+	public float getRecall10k() {
 		return recall10k;
 	}
 
-
-	public void setRecall10k(int recall10k) {
+	public void setRecall10k(float recall10k) {
 		this.recall10k = recall10k;
 	}
 
-
-	public int getPrecision10k() {
+	public float getPrecision10k() {
 		return precision10k;
 	}
 
-
-	public void setPrecision10k(int precision10k) {
+	public void setPrecision10k(float precision10k) {
 		this.precision10k = precision10k;
 	}
 
-
-	public int getNdcg() {
+	public float getNdcg() {
 		return ndcg;
 	}
 
-
-	public void setNdcg(int ndcg) {
+	public void setNdcg(float ndcg) {
 		this.ndcg = ndcg;
 	}
-	
+
 }
