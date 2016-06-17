@@ -42,7 +42,9 @@ public class Searcher {
 			System.out.println("Error en la busqueda");
 			e.printStackTrace();
 		}
+		
 		return hits;
+		
 	}
 	
 	public Document doc(int docId){
