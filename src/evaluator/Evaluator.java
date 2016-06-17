@@ -15,6 +15,8 @@ import Searcher.Searcher;
  */
 
 public class Evaluator {
+	
+	private final float invalid = -1;
 
 	private Float recall10k;
 	private Float precision10k;
@@ -22,9 +24,9 @@ public class Evaluator {
 	private Vector<QueryRelevance> relevanceData;
 
 	public Evaluator(String dataComparationPath) throws IOException	{
-		recall10k = (float) -1;
-		precision10k = (float) -1;
-		ndcg = (float) -1;
+		recall10k = invalid;
+		precision10k = invalid;
+		ndcg = invalid;
 		QueryRelParser parser = new QueryRelParser(dataComparationPath);//"Forum_Data\\queryRelJudgements"
 		relevanceData = parser.parse();
 	}
