@@ -115,7 +115,7 @@ public class Indexer {
 
 	}
 
-	//Recorre el directorio dado y indexa los archivos xml encontrados
+	//Recorre el directorio dado e indexa los archivos xml encontrados
 	public void index (String xmlPath, String indexPath){
 
 		//Verifica que exista el directorio raiz de los archivos
