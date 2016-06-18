@@ -64,9 +64,11 @@ public class main {
 			Evaluator eval = new Evaluator("Forum_Data\\queryRelJudgements");
 			eval.calculateRecall10k("virtualbox keyboard problem", hits, searcher);
 			eval.calculatePrecision10k("virtualbox keyboard problem", hits, searcher);
+			eval.calculateNDCG("virtualbox keyboard problem", hits, searcher);
 			
 			System.out.println("Recall: " + eval.getRecall10k());
 			System.out.println("Precision: " + eval.getPrecision10k());
+			System.out.println("NDCG: " + eval.getNdcg());
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
