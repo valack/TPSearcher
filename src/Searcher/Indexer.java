@@ -1,21 +1,11 @@
 package Searcher;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.apache.tika.parser.ParseContext;
-import org.apache.tika.parser.html.HtmlParser;
-import org.apache.tika.sax.BodyContentHandler;
-import org.apache.tika.exception.TikaException;
-import org.apache.tika.metadata.Metadata;
-import org.xml.sax.SAXException;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
@@ -68,7 +58,7 @@ public class Indexer {
 		if (!f.exists()){ 
 			System.out.println("La ruta "+xmlPath+" no existe");	
 		}
-		File[] ficheros = f.listFiles();
+		File[] directories = f.listFiles();
 
 		//Inicializo el writer
 		try {
@@ -79,10 +69,9 @@ public class Indexer {
 		}
 
 		//Por cada archivo en el directorio
-		for (int x=0;x<ficheros.length;x++){
-			
+		for (int x=0; x<directories.length; x++)	{
 			// Path contiene la ruta raiz mas las carpetas y archivos
-			String path = xmlPath+"\\"+ficheros[x].getName(); 
+			String path = xmlPath+"\\"+directories[x].getName(); 
 			System.out.println(path);
 
 			String files;

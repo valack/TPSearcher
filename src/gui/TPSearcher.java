@@ -11,7 +11,6 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 
 import evaluator.Evaluator;
-import Searcher.Indexer;
 import Searcher.Searcher;
 
 /***
@@ -20,11 +19,11 @@ import Searcher.Searcher;
  *
  */
 
-public class main {
+public class TPSearcher {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String xmlPath="F:\\Facultad\\Optativas\\Analisis y recuperacion de informacion\\Forum_Data\\All";
+//		String xmlPath="F:\\Facultad\\Optativas\\Analisis y recuperacion de informacion\\Forum_Data\\All";
 		String indexPath="index";
 		/*
 		//Creacion del indice a partir del dataset
