@@ -23,6 +23,50 @@ public class Searcher {
 	private Query query;
 	private String error;
 
+	/*public static void main(String[] args) {
+		ArrayList<Integer> prueba = new ArrayList<Integer>();
+		for (int i = 0; i < 20; i++) {			
+			prueba.add(i);
+		}
+		Paginator p = new Paginator();
+		p.Paginate(prueba.size(), 6);
+		System.out.println("start "+p.getStart());
+		System.out.println("end "+p.getEnd());
+		System.out.println("-------------------------");
+	
+		while ( !p.isLastPage())  {
+			System.out.println("pagina: "+p.getPage());
+			for (int i = p.getStart(); i < p.getEnd(); i++) {
+				System.out.println(prueba.get(i));
+			} 
+			p.nextPage();
+			System.out.println("start "+p.getStart());
+			System.out.println("end "+p.getEnd());
+		}
+		for (int i = p.getStart(); i < p.getEnd(); i++) {
+			System.out.println(prueba.get(i));
+		} 
+		
+		System.out.println("-------------------------");
+		System.out.println("ahora pa'tra ");
+		while ( !p.isFirstPage())  {
+			System.out.println("pagina: "+p.getPage());
+			for (int i = p.getStart(); i < p.getEnd(); i++) {
+				System.out.println(prueba.get(i));
+			} 
+			p.prevPage();
+			System.out.println("start "+p.getStart());
+			System.out.println("end "+p.getEnd());
+		}
+		for (int i = p.getStart(); i < p.getEnd(); i++) {
+			System.out.println(prueba.get(i));
+		} 
+		
+	}
+	*/
+	
+	
+	
 	public Searcher(){
 	}
 	

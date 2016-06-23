@@ -10,7 +10,7 @@ import org.apache.lucene.search.TopDocs;
 import Searcher.Searcher;
 /****
  *  Evaluador de metricas
- * @author Valacco
+ * @author Sipitria, Valacco, Zamora
  *
  */
 

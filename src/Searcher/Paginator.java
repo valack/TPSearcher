@@ -1,43 +1,64 @@
 package Searcher;
 
+/***
+ * 
+ * @author Sipitria, Valacco, Zamora
+ *
+ */
+
+
 public class Paginator {
 
-	private int start;
-	private int end;
+	private int pageStart;
+	private int pageEnd;
 	private int pageSize;
-	//private int pageCount;
-	private int length;
-	/*
-	 * falta revisar los controles de ultima pagina y primera pagina, pageCount debe ser usada?
-	 */
+	private int docsLenght;
+	private int pageCount;
 	
-	public Paginator (int xLength, int xPageSize){
-		
-		length    = xLength;
-		pageSize  = xPageSize;
-		start     = 0;
-		end       = pageSize-1;
-		//pageCount = 1;
-		
+
+	public Paginator() {
+		super();
 	}
-	
+
+	public void Paginate(int docsLenght, int pageSize){
+
+		this.pageSize  	= pageSize;
+		this.docsLenght		= docsLenght;
+		pageStart     	= 0;
+		pageEnd      	= pageSize;
+		pageCount 		= 1;
+	}
+
 	public void nextPage(){
-		
-		if (end+pageSize<=length) {
-			start = end+1;
-			end   = Math.min(length, end+pageSize);
-			//pageCount++;
-		}
-		
+			pageStart = pageEnd;
+			pageEnd   = Math.min(docsLenght, pageEnd+pageSize);
+			pageCount++;
+	}
+
+	public void prevPage(){
+			pageCount--;
+			pageEnd   = pageStart;//pageEnd-pageSize;
+			pageStart = Math.max(0, pageStart-pageSize);
 	}
 	
-	public void prevPage(){
-		
-		if (start-pageSize>=0){
-			//pageCount--;
-			start = Math.max(0, start-pageSize);
-			end   = end-pageSize;
-		}
+	public boolean isLastPage(){
+		return docsLenght == pageEnd;
+	}
+	
+	public boolean isFirstPage(){
+		return pageStart==0;
+	}
+
+	public int getStart (){
+		return this.pageStart;
+	}
+	
+	public int getPage(){
+		return this.pageCount;
+	}
+
+	public int getEnd (){
+		return this.pageEnd;
 	}
 
 }
