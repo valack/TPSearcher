@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javax.swing.JOptionPane;
+
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
@@ -16,12 +18,16 @@ public class Indexer {
 
 	//Atributos
 	private IndexWriter writer = null;
-
+	private String sLog    = "";
 	//Metodos
 
 	//Constructor
 	public Indexer(){		
-	}	
+	}
+	
+	public void log(String texto){
+		sLog = sLog+texto+"\n";
+	}
 
 	//Si existe el indice lo devuelve y sino lo crea
 	public IndexWriter getIndexWriter(boolean create, String indexPath) throws IOException {
@@ -43,10 +49,10 @@ public class Indexer {
 		try {
 			writer.addDocument(thread);
 		} catch (IOException e) {
-			System.out.println("Error al agregar el documento"+thread.get("Path"));
+			JOptionPane.showMessageDialog(null,"Error al agregar el documento"+thread.get("Path"));
 			e.printStackTrace();
 		}	
-		System.out.println("Documento "+thread.get("ThreadID")+" agregado al indice");
+		log("Documento "+thread.get("ThreadID")+" agregado al indice");
 
 	}
 
@@ -56,7 +62,7 @@ public class Indexer {
 		//Verifica que exista el directorio raiz de los archivos
 		File f = new File(xmlPath);
 		if (!f.exists()){ 
-			System.out.println("La ruta "+xmlPath+" no existe");	
+			JOptionPane.showMessageDialog(null,"No se pudo encontrar el directorio de threads");	
 		}
 		File[] directories = f.listFiles();
 
@@ -64,46 +70,57 @@ public class Indexer {
 		try {
 			writer = getIndexWriter(false, indexPath);
 		} catch (IOException e) {
-			System.out.println("Error al crear el indice");
+			JOptionPane.showMessageDialog(null,"Error al crear el indice");
 			e.printStackTrace();
 		}
-
+		
+		log("Escaneando directorio");
+		log(" - - - - - - - - - - - - - - - - - - - - - - - ");
+				
 		//Por cada archivo en el directorio
 		for (int x=0; x<directories.length; x++)	{
 			// Path contiene la ruta raiz mas las carpetas y archivos
 			String path = xmlPath+"\\"+directories[x].getName(); 
-			System.out.println(path);
-
+			
+			log("Path:"+path);
+			
 			String files;
 			File folder = new File(path);
-			File[] listOfFiles = folder.listFiles(); 
+			File[] listOfFiles = folder.listFiles();
+			
+			if (listOfFiles != null ){
 
-			for (int i = 0; i < listOfFiles.length; i++) 
-			{
-				if (listOfFiles[i].isFile()) 
+				for (int i = 0; i < listOfFiles.length; i++) 
 				{
-					files = listOfFiles[i].getName();
-					if (files.endsWith(".xml") || files.endsWith(".XML"))
+					if (listOfFiles[i].isFile()) 
 					{
-						System.out.println(path+"\\"+files);
-						atomIndex(path+"\\"+files, indexPath);
+						files = listOfFiles[i].getName();
+						if (files.endsWith(".xml") || files.endsWith(".XML"))
+						{
+							log(" - "+path+"\\"+files);
+							atomIndex(path+"\\"+files, indexPath);
+						}
 					}
 				}
 			}
+			log("--------------------------------------------------------------------------------------------------------------------------------");
 		}
 		
 		//Cierra el Writer
 		try {
 			closeIndexWriter();
 		} catch (IOException e) {
-			System.out.println("No se pudo cerrar el indice");
+			JOptionPane.showMessageDialog(null,"No se pudo cerrar el indice");
 			e.printStackTrace();
 		}
-		System.out.println("indice creado");
-
+		log("Indice creado");
 
 	}
-
+	
+	public String getLog(){
+		return sLog;
+	}
+	
 	//Cierra el indice
 	public void closeIndexWriter() throws IOException {
 		if (writer != null) {
