@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
+
 
 
 public class QueryRelParser {
@@ -63,6 +65,7 @@ public class QueryRelParser {
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null,"No se pudo encontrar el directorio de relaciones");
 			e.printStackTrace();
 		}
 

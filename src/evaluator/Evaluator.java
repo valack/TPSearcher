@@ -2,6 +2,9 @@ package evaluator;
 
 import java.io.IOException;
 import java.util.Vector;
+
+import javax.print.Doc;
+
 import java.lang.Math;
 
 import org.apache.lucene.search.ScoreDoc;
@@ -10,7 +13,7 @@ import org.apache.lucene.search.TopDocs;
 import Searcher.Searcher;
 /****
  *  Evaluador de metricas
- * @author Sipitria, Valacco, Zamora
+ * @author Valacco
  *
  */
 
@@ -32,6 +35,10 @@ public class Evaluator {
 		relevanceData = parser.parse();
 	}
 
+	public int getRelevanceAt(String query, String xDocId){
+		int docID = Integer.parseInt(xDocId);
+		return getQuery(query).getDocRelevance(docID);
+	}
 
 	private QueryRelevance getQuery(String query)	{
 		for (QueryRelevance qr : relevanceData) {

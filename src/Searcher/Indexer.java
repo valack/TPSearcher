@@ -13,21 +13,19 @@ import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
+import gui.TPSearcher;
+
 
 public class Indexer {
 
 	//Atributos
 	private IndexWriter writer = null;
-	private String sLog    = "";
 	//Metodos
 
 	//Constructor
 	public Indexer(){		
 	}
 	
-	public void log(String texto){
-		sLog = sLog+texto+"\n";
-	}
 
 	//Si existe el indice lo devuelve y sino lo crea
 	public IndexWriter getIndexWriter(boolean create, String indexPath) throws IOException {
@@ -52,7 +50,7 @@ public class Indexer {
 			JOptionPane.showMessageDialog(null,"Error al agregar el documento"+thread.get("Path"));
 			e.printStackTrace();
 		}	
-		log("Documento "+thread.get("ThreadID")+" agregado al indice");
+		TPSearcher.indexLog("  - Documento "+thread.get("ThreadID")+" agregado al indice");
 
 	}
 
@@ -74,15 +72,17 @@ public class Indexer {
 			e.printStackTrace();
 		}
 		
-		log("Escaneando directorio");
-		log(" - - - - - - - - - - - - - - - - - - - - - - - ");
+		TPSearcher.indexLog("Escaneando directorio");
+		TPSearcher.indexLog(" - - - - - - - - - - - - - - - - - - - - - - - ");
 				
 		//Por cada archivo en el directorio
+		
+	
 		for (int x=0; x<directories.length; x++)	{
 			// Path contiene la ruta raiz mas las carpetas y archivos
 			String path = xmlPath+"\\"+directories[x].getName(); 
 			
-			log("Path:"+path);
+			TPSearcher.indexLog("Path:"+path);
 			
 			String files;
 			File folder = new File(path);
@@ -97,15 +97,15 @@ public class Indexer {
 						files = listOfFiles[i].getName();
 						if (files.endsWith(".xml") || files.endsWith(".XML"))
 						{
-							log(" - "+path+"\\"+files);
+							TPSearcher.indexLog(" - "+path+"\\"+files);
 							atomIndex(path+"\\"+files, indexPath);
 						}
 					}
 				}
 			}
-			log("--------------------------------------------------------------------------------------------------------------------------------");
+			TPSearcher.indexLog("--------------------------------------------------------------------------------------------------------------------------------");
 		}
-		
+
 		//Cierra el Writer
 		try {
 			closeIndexWriter();
@@ -113,13 +113,10 @@ public class Indexer {
 			JOptionPane.showMessageDialog(null,"No se pudo cerrar el indice");
 			e.printStackTrace();
 		}
-		log("Indice creado");
+		TPSearcher.indexLog("Indice creado");
 
 	}
 	
-	public String getLog(){
-		return sLog;
-	}
 	
 	//Cierra el indice
 	public void closeIndexWriter() throws IOException {
