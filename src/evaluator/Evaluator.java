@@ -11,11 +11,12 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 
 import Searcher.Searcher;
-/****
- *  Evaluador de metricas
- * @author Valacco
- *
- */
+
+/***
+*
+* @author Sipitria, Valacco, Zamora
+*
+*/
 
 public class Evaluator {
 
@@ -45,6 +46,7 @@ public class Evaluator {
 			if (qr.getQuery().equals(query))
 				return qr;
 		}
+		
 		return null;
 	}
 	/**

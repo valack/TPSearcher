@@ -15,6 +15,12 @@ import org.apache.tika.parser.html.HtmlParser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.xml.sax.SAXException;
 
+/***
+*
+* @author Sipitria, Valacco, Zamora
+*
+*/
+
 public class XMLdocsParser {
 
 	//Parsea el xml en html

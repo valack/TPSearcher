@@ -14,6 +14,7 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 
 import Searcher.Indexer;
+import Searcher.Paginator;
 import Searcher.Searcher;
 import evaluator.Evaluator;
 
@@ -44,25 +45,30 @@ import java.awt.Desktop;
  */
 
 public class TPSearcher extends JFrame {
-
+	
+	private final int 		  maxHits=100;
 	private static TPSearcher frame;
 	private JPanel 	  		  container;
 	private static JTextArea  logIndex;
 	private JTextArea         txtThreadPathI;
 	private JTextArea         txtIndexPathI;
 	private JTextArea         txtIndexPathE;
+	private JTextArea 		  txtIndexPathB;
 	private JTextArea         txtSearchB;
 	private JTextArea		  txtJudgmentPath;
-	private JTextArea 		  txtIndexPathB;
 	private JEditorPane	      result;
-	private JComboBox<String> seleccionCampo;
+	private JEditorPane       txtTop10Docs;
 	private JComboBox<String> seleccionQuery;
 	private TopDocs 		  hits=null; 
 	private Searcher 		  searcher;
 	private JLabel 			  lblRecallValue;
 	private JLabel    		  lblPrecitionValue; 
 	private JLabel 			  lblNdcgValue; 
-
+	private Paginator 		  paginator=new Paginator();
+	private JButton			  btnNextPage;
+	private JButton			  btnPrevPage;
+	
+	
 //	private JLabel lblSearchE;
 	
 	/**
@@ -248,10 +254,10 @@ public class TPSearcher extends JFrame {
 		//----------
 		txtSearchB = new JTextArea();
 		txtSearchB.setFont(new java.awt.Font("Arial",1,12));
-		txtSearchB.setBounds(121, 11, 370, 23);
+		txtSearchB.setBounds(11, 11, 480, 23);
 		searcherPane.add(txtSearchB);
 
-		txtIndexPathB = new JTextArea("");
+		txtIndexPathB = new JTextArea("index");
 		txtIndexPathB.setFont(new java.awt.Font("Arial",1,12));
 		txtIndexPathB.setBounds(132, 483, 388, 19);
 		searcherPane.add(txtIndexPathB);
@@ -291,6 +297,10 @@ public class TPSearcher extends JFrame {
 		separator.setBounds(10, 465, 623, 2);
 		searcherPane.add(separator);
 
+		JLabel lblPageNumber = new JLabel("");
+		lblPageNumber.setBounds(315, 438, 46, 18);
+		searcherPane.add(lblPageNumber);
+
 		//--------
 		// BUTTONS
 		//--------	
@@ -303,6 +313,7 @@ public class TPSearcher extends JFrame {
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String txtResult="<html>\n";
+				String results="";
 				if (txtIndexPathB.getText().equals("")){
 					JOptionPane.showMessageDialog(null,"Seleccione el directorio del indice");	
 				}else{
@@ -310,27 +321,28 @@ public class TPSearcher extends JFrame {
 					//lblSearchE.setText(searchText);
 					
 					searcher = new Searcher();
-					searcher.setQuery(seleccionCampo.getSelectedItem().toString(), searchText);
-					hits = searcher.search(txtIndexPathB.getText(), 100);
+					//searcher.setQuery(seleccionCampo.getSelectedItem().toString(), searchText);
+					//searcher.set
+					//searcher.setQuery(null, searchText);
+					
+					hits = searcher.search(txtIndexPathB.getText(), maxHits, searchText);
 					//hits = searcher.search(txtIndexPathB.getText(), 10);
+					paginator.Paginate(hits.totalHits , 5);
+					
 					if (hits.totalHits == 0){
 						txtResult=txtResult+"<font color=red size=+1>No se encontraron documentos relacionados con la busqueda</font>";
+						
 						JOptionPane.showMessageDialog(null,"Ningún documento coincide con la busqueda");	
 					}else{
 						txtResult=txtResult+"<font size=+1 color=gray><b>Total de resultados: "+hits.totalHits+"</b></font><BR><BR>";
-						String path;
-						String titulo;
+						results=showResults();
+						btnNextPage.setEnabled(true);
+						String pageNumber = Integer.toString(paginator.getPage());
+						lblPageNumber.setText(pageNumber);
 						
-						for (ScoreDoc sd : hits.scoreDocs) {
-							path=searcher.doc(sd.doc).get("Path");
-							titulo=searcher.doc(sd.doc).get("Title");
-							
-							txtResult = txtResult + "<font size=+1><a href='" + path +"'> "+ titulo+ "</a></font>";
-							txtResult = txtResult + "<font size=-1 color=gray>   "+sd.score+"</font><BR>";
-							txtResult = txtResult + "<font size=-1 color=green>"+path+"</font><BR><BR>";
 						}
-					}
-					txtResult=txtResult+"<html>\n";
+					
+					txtResult=txtResult+results +"<html>\n";
 					result.setText(txtResult);
 					result.setCaretPosition(0);
 					//
@@ -356,26 +368,70 @@ public class TPSearcher extends JFrame {
 		});
 
 
-		//---------
-		// COMBOBOX
-		//---------
-		String[] componentBox = {"Title", "Content", "ThreadID"};//este string es para inicializar el combobox
-		seleccionCampo = new JComboBox<String>(componentBox);
-		seleccionCampo.setBounds(10, 11, 101, 20);
-		searcherPane.add(seleccionCampo);
+//		//---------
+//		// COMBOBOX
+//		//---------
+//		String[] componentBox = {"Content", "Title", "ThreadID"};//este string es para inicializar el combobox
+//		seleccionCampo = new JComboBox<String>(componentBox);
+//		seleccionCampo.setBounds(10, 11, 101, 20);
+//		searcherPane.add(seleccionCampo);
 		
-		JLabel lblPageNumber = new JLabel("");
-		lblPageNumber.setBounds(295, 438, 46, 18);
-		searcherPane.add(lblPageNumber);
 		
-		JButton btnNextPage = new JButton("->");
+		btnNextPage = new JButton("Next");
+		btnNextPage.setEnabled(false);
 		btnNextPage.setBounds(346, 436, 89, 23);
 		searcherPane.add(btnNextPage);
+		btnNextPage.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnPrevPage.setEnabled(true);
+				paginator.nextPage();
+				result.setText("");
+				String txtResult="<html>\n";
+				String results="";
+				String pageNumber = Integer.toString(paginator.getPage());
+				lblPageNumber.setText(pageNumber);
+				txtResult=txtResult+"<font size=+1 color=gray><b>Total de resultados: "+hits.totalHits+"</b></font><BR><BR>";
+				results=showResults();
+				
+				txtResult=txtResult+results +"<html>\n";
+				result.setText(txtResult);
+				result.setCaretPosition(0);
+				if (paginator.isLastPage())
+					btnNextPage.setEnabled(false);
+				
+				
+			}
+		});
 		
-		JButton btnPrevPage = new JButton("<-");
+		
+		
+		btnPrevPage = new JButton("Prev");
+		btnPrevPage.setEnabled(false);
 		btnPrevPage.setBounds(202, 436, 89, 23);
 		searcherPane.add(btnPrevPage);
-		indexPane.setLayout(null);	
+		indexPane.setLayout(null);
+		btnPrevPage.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnNextPage.setEnabled(true);
+				paginator.prevPage();
+				result.setText("");
+				String txtResult="<html>\n";
+				String results="";
+				String pageNumber = Integer.toString(paginator.getPage());
+				lblPageNumber.setText(pageNumber);
+				
+				txtResult=txtResult+"<font size=+1 color=gray><b>Total de resultados: "+hits.totalHits+"</b></font><BR><BR>";
+				results=showResults();
+				txtResult=txtResult+results +"<html>\n";
+				result.setText(txtResult);
+				result.setCaretPosition(0);
+				if (paginator.isFirstPage())
+					btnPrevPage.setEnabled(false);		
+				
+				
+	
+			}
+		});
 
 
 		//----------------------------------------		
@@ -392,11 +448,18 @@ public class TPSearcher extends JFrame {
 		evaluatorPane.add(recallPane);
 		recallPane.setLayout(null);
 
-		JPanel docsPane = new JPanel();
+		JScrollPane docsPane = new JScrollPane();
+		docsPane.setBorder(new TitledBorder(null, "Top 10 Docs", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		docsPane.setBounds(352, 155, 280, 342);
+		docsPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		docsPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		evaluatorPane.add(docsPane);
+		
+		/*JPanel docsPane = new JPanel();
 		docsPane.setBorder(new TitledBorder(null, "Top 10 Docs", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		docsPane.setBounds(352, 155, 280, 342);
 		evaluatorPane.add(docsPane);
-		docsPane.setLayout(null);
+		docsPane.setLayout(null);*/
 
 		JPanel precitionPane = new JPanel();
 		precitionPane.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -471,17 +534,34 @@ public class TPSearcher extends JFrame {
 		txtJudgmentPath.setBounds(140, 51, 388, 19);
 		evaluatorPane.add(txtJudgmentPath);
 		
-		txtIndexPathE = new JTextArea();
+		txtIndexPathE = new JTextArea("index");
 		txtIndexPathE.setFont(new java.awt.Font("Arial",1,12));
 		txtIndexPathE.setBounds(140, 11, 388, 19);
 		evaluatorPane.add(txtIndexPathE);
 
-		JEditorPane txtTop10Docs = new JEditorPane();
+		txtTop10Docs = new JEditorPane();
 		txtTop10Docs.setFont(new Font("Monospaced", Font.PLAIN, 15));
 		txtTop10Docs.setText("");
 		txtTop10Docs.setContentType( "text/html" );
 		txtTop10Docs.setBounds(10, 17, 260, 318);
 		docsPane.add(txtTop10Docs);
+		
+		txtTop10Docs.addHyperlinkListener(new HyperlinkListener() {
+		    public void hyperlinkUpdate(HyperlinkEvent hle) {
+		    	if (HyperlinkEvent.EventType.ACTIVATED.equals(hle.getEventType())) {
+
+		    		File xmlFile = new File (hle.getDescription().toString());
+		    		try {
+		    			Desktop.getDesktop().open(xmlFile);
+		    		} catch (IOException e) {
+		    			// TODO Auto-generated catch block
+		    			e.printStackTrace();
+		    		}
+		    	}
+		    }
+		});
+		
+		docsPane.setViewportView(txtTop10Docs);
 		
 		//----------
 		// BUTTONS
@@ -521,9 +601,9 @@ public class TPSearcher extends JFrame {
 
 					Searcher evalSearcher = new Searcher();
 					
-					evalSearcher.setQuery(seleccionCampo.getSelectedItem().toString(), selectedQuery);
+					//evalSearcher.setQuery(seleccionCampo.getSelectedItem().toString(), selectedQuery);
 					
-					TopDocs evalHits = evalSearcher.search(txtIndexPathE.getText(), 10);
+					TopDocs evalHits = evalSearcher.search(txtIndexPathE.getText(), 10,selectedQuery);
 					Evaluator eval   = null;
 					
 					try {
@@ -651,12 +731,35 @@ public class TPSearcher extends JFrame {
 
 	}
 
+	
+	
+	
 	// Metodo estatico para escribir en el log del indexador
 	public static void indexLog(String s){
 		logIndex.append(s+"\n");
 		logIndex.repaint();
 	}
-
+	
+	// Metodo para mostrar resultados
+	public String showResults () {
+		String path;
+		String titulo;
+		String txtResult="";
+		for (int i = paginator.getStart(); i < paginator.getEnd(); i++) {
+			//for (ScoreDoc sd : hits.scoreDocs) {
+			path=searcher.doc(hits.scoreDocs[i].doc).get("Path");
+			titulo=searcher.doc(hits.scoreDocs[i].doc).get("Title");
+			//path=searcher.doc(sd.doc).get("Path");
+			//titulo=searcher.doc(sd.doc).get("Title");
+			
+			txtResult = txtResult + "<font size=+1><a href='" + path +"'> "+ titulo+ "</a></font>";
+			txtResult = txtResult + "<font size=-1 color=gray>   "+hits.scoreDocs[i].score+"</font><BR>";
+			txtResult = txtResult + "<font size=-1 color=green>"+path+"</font><BR><BR>";
+		}
+		return txtResult;
+	}
+		
+	
 
 	public static void main(String[] args) {
 

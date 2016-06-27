@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import javax.print.Doc;
 import javax.swing.JOptionPane;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -13,8 +14,16 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.Version;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 
+
+/***
+*
+* @author Sipitria, Valacco, Zamora
+*
+*/
 
 
 public class Searcher {
@@ -30,8 +39,12 @@ public class Searcher {
 		return error;
 	}
 	
-	public void setQuery (String field, String term){
-		QueryParser p= new QueryParser(field, new StandardAnalyzer());
+	public void setQuery ( String term){
+
+		//String[] fields = {"title","content"};
+	
+		MultiFieldQueryParser p= new MultiFieldQueryParser(new String[]{"Content","Title"}, new StandardAnalyzer());
+		//QueryParser p= new QueryParser();
 		query = null;
 		try {
 			query = p.parse(term);
@@ -42,7 +55,7 @@ public class Searcher {
 		}
 	}
 	
-	public TopDocs search(String indexPath, int matchs){
+	public TopDocs search(String indexPath, int matchs, String searchText){
 		Path 	path = Paths.get(indexPath);
 		TopDocs hits = null;
 		try {
@@ -51,6 +64,7 @@ public class Searcher {
 			JOptionPane.showMessageDialog(null,"No se pudo encontrar el directorio del indice");
 			e.printStackTrace();
 		}
+		setQuery(searchText);
 		try {
 			hits = indexSearcher.search(query,matchs);
 		} catch (IOException e) {

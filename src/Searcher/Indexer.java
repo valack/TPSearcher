@@ -15,6 +15,12 @@ import org.apache.lucene.store.FSDirectory;
 
 import gui.TPSearcher;
 
+/***
+*
+* @author Sipitria, Valacco, Zamora
+*
+*/
+
 
 public class Indexer {
 
