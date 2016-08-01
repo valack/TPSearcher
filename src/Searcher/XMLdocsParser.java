@@ -41,7 +41,7 @@ public class XMLdocsParser {
 
 		HtmlParser htmlparser = new HtmlParser();
 		try {
-			htmlparser.parse(inputstream, handler, metadata,pcontext);
+			htmlparser.parse(inputstream, handler, metadata, pcontext);
 		} catch (IOException | SAXException | TikaException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Error al parsear el archivo");
@@ -69,7 +69,8 @@ public class XMLdocsParser {
 		thread.add(new TextField("Path",path,Field.Store.YES));
 		thread.add(new TextField("ThreadID",threadId,Field.Store.YES));
 		thread.add(new TextField("Content",content,Field.Store.NO));
-
+		
+		
 		return thread;
 	}
 	

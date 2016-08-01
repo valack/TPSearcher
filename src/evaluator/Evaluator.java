@@ -123,7 +123,12 @@ public class Evaluator {
 			//Es i+1 porque la posición de documentos recuperados arranca en 1, pero el arreglo de ScoreDocs en 0
 			ndcg += (float) (relevance / Math.log(i+1));
 		}
-		float dcgIdeal = idealScore * retrievedDocs.scoreDocs.length;
+		//Calculo el dcg ideal'
+		//rel1 es 2, asique ya inicializo con ese valor
+		float dcgIdeal = idealScore;
+		for (int i = 1; i < retrievedDocs.scoreDocs.length; i++) {
+			dcgIdeal += (float) (idealScore / Math.log(i+1));
+		}
 		this.ndcg = ndcg / dcgIdeal;
 		
 	}

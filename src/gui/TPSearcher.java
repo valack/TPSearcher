@@ -1,5 +1,6 @@
 package gui;
 
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -13,9 +14,12 @@ import javax.swing.border.EmptyBorder;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 
+import Ranker.SentimentAnalyzer;
 import Searcher.Indexer;
 import Searcher.Paginator;
 import Searcher.Searcher;
+import edu.stanford.nlp.simple.Document;
+import edu.stanford.nlp.simple.Sentence;
 import evaluator.Evaluator;
 
 import javax.swing.JLabel;
@@ -25,6 +29,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.swing.border.TitledBorder;
@@ -33,9 +38,8 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.JSeparator;
 import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
-import javax.swing.SwingConstants;
-import javax.swing.border.LineBorder;
-import java.awt.Color;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.Desktop;
 
 /***
@@ -67,23 +71,18 @@ public class TPSearcher extends JFrame {
 	private Paginator 		  paginator=new Paginator();
 	private JButton			  btnNextPage;
 	private JButton			  btnPrevPage;
-	
-	
-//	private JLabel lblSearchE;
-	
-	/**
-	 * TODO LIST:
-	 * 			-Terminar paginador, falta la funcionalidad la interfaz esta armada
-	 * 			-Realizar search con hits y collector para recuperar todos los documentos posibles(sin limite)
-	 * 			-Buscar imagen de flechas para botones next/prev page
-	 * 
-	 * 			-acomodar los datos que se mmuestran de cada documento recuperado, en buscador y en evaluador
-	 * 			-mensajes de error en evaluador para cuando no se seleccionan paths
-	 */
+		
 	
 	public TPSearcher() {
-
 		
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+
 		//----------------------
 		// INTERFACE CONSTRUCTOR
 		//----------------------
@@ -312,22 +311,19 @@ public class TPSearcher extends JFrame {
 		result.setText("");
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				btnPrevPage.setEnabled(false);
+				
 				String txtResult="<html>\n";
 				String results="";
 				if (txtIndexPathB.getText().equals("")){
 					JOptionPane.showMessageDialog(null,"Seleccione el directorio del indice");	
 				}else{
 					String searchText = txtSearchB.getText();
-					//lblSearchE.setText(searchText);
 					
 					searcher = new Searcher();
-					//searcher.setQuery(seleccionCampo.getSelectedItem().toString(), searchText);
-					//searcher.set
-					//searcher.setQuery(null, searchText);
-					
 					hits = searcher.search(txtIndexPathB.getText(), maxHits, searchText);
-					//hits = searcher.search(txtIndexPathB.getText(), 10);
-					paginator.Paginate(hits.totalHits , 5);
+					paginator.Paginate(maxHits , 5);
 					
 					if (hits.totalHits == 0){
 						txtResult=txtResult+"<font color=red size=+1>No se encontraron documentos relacionados con la busqueda</font>";
@@ -427,8 +423,6 @@ public class TPSearcher extends JFrame {
 				result.setCaretPosition(0);
 				if (paginator.isFirstPage())
 					btnPrevPage.setEnabled(false);		
-				
-				
 	
 			}
 		});
@@ -455,12 +449,6 @@ public class TPSearcher extends JFrame {
 		docsPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		evaluatorPane.add(docsPane);
 		
-		/*JPanel docsPane = new JPanel();
-		docsPane.setBorder(new TitledBorder(null, "Top 10 Docs", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		docsPane.setBounds(352, 155, 280, 342);
-		evaluatorPane.add(docsPane);
-		docsPane.setLayout(null);*/
-
 		JPanel precitionPane = new JPanel();
 		precitionPane.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		precitionPane.setLayout(null);
@@ -512,13 +500,7 @@ public class TPSearcher extends JFrame {
 		lblNdcgValue.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblNdcgValue.setBounds(178, 31, 144, 29);
 		ndcgPane.add(lblNdcgValue);
-		
-		/*lblSearchE= new JLabel("");
-		lblSearchE.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSearchE.setFont(new Font("Tahoma", Font.BOLD, 14));
-		lblSearchE.setBounds(125, 14, 379, 19);
-		evaluatorPane.add(lblSearchE);*/
-	
+			
 		JLabel lblNewLabel_1 = new JLabel("Directorio del indice");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblNewLabel_1.setBounds(10, 14, 128, 14);
@@ -618,7 +600,6 @@ public class TPSearcher extends JFrame {
 					eval.calculateNDCG(selectedQuery, evalHits, evalSearcher);
 
 					
-					//txtResult=txtResult+"<font size=+1 color=gray><b>Total de resultados: "+evalhits.totalHits+"</b></font><BR><BR>";
 					String path;
 					String titulo;
 
@@ -634,16 +615,10 @@ public class TPSearcher extends JFrame {
 					txtTop10Docs.setText(txtResult);
 					txtTop10Docs.setCaretPosition(0);
 					
-					/*for (ScoreDoc sd : evalHits.scoreDocs) {
-						txtTop10Docs.append(evalSearcher.doc(sd.doc).get("ThreadID")+": "+sd.score+"  \n");
-					}
-					System.out.println("recall "+eval.getRecall10k());
-				    System.out.println("precision "+eval.getPrecision10k());
-				    System.out.println("nDCG "+eval.getNdcg());*/
-
 					lblRecallValue.setText(Float.toString(eval.getRecall10k()));
 					lblPrecitionValue.setText(Float.toString(eval.getPrecision10k()));
 					lblNdcgValue.setText(Float.toString(eval.getNdcg()));
+					
 					//else mostrar ventana busqueda no realizada, 
 				}
 			}
@@ -746,11 +721,8 @@ public class TPSearcher extends JFrame {
 		String titulo;
 		String txtResult="";
 		for (int i = paginator.getStart(); i < paginator.getEnd(); i++) {
-			//for (ScoreDoc sd : hits.scoreDocs) {
 			path=searcher.doc(hits.scoreDocs[i].doc).get("Path");
 			titulo=searcher.doc(hits.scoreDocs[i].doc).get("Title");
-			//path=searcher.doc(sd.doc).get("Path");
-			//titulo=searcher.doc(sd.doc).get("Title");
 			
 			txtResult = txtResult + "<font size=+1><a href='" + path +"'> "+ titulo+ "</a></font>";
 			txtResult = txtResult + "<font size=-1 color=gray>   "+hits.scoreDocs[i].score+"</font><BR>";
@@ -758,66 +730,27 @@ public class TPSearcher extends JFrame {
 		}
 		return txtResult;
 	}
-		
 	
 
 	public static void main(String[] args) {
-
+/*
 		frame = new TPSearcher();
 		frame.setResizable(false);
 		frame.setVisible(true);
-		/*// TODO Auto-generated method stub
-//		String xmlPath="F:\\Facultad\\Optativas\\Analisis y recuperacion de informacion\\Forum_Data\\All";
-		String indexPath="index";
-		/*
-		//Creacion del indice a partir del dataset
-		Indexer indexer = new Indexer();
-		indexer.index(xmlPath,indexPath);
-
-		//Creacion de los queries
-		//Query q=new TermQuery(new Term("Content", "Ubuntu"));
-		QueryParser p= new QueryParser("Content", new StandardAnalyzer());
-		Query q=null;
-		q = new TermQuery(new Term("contents", "lucene"));
-		//TopDocs hits = is.search(q);
+	*/	
+		System.out.println("Arranco el sentiment analizer ----------------------");
+		SentimentAnalyzer prueba = new SentimentAnalyzer();
 		try {
-			q = p.parse("virtualbox keyboard problem");
-		} catch (ParseException e) {
+			prueba.calculateThreadsSentiment("F:\\Facultad\\Optativas\\Analisis y recuperacion de informacion\\Forum_Data\\All");
+		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		System.out.println("");
-		System.out.println("----------------------------");
-		System.out.println("");
-
-		//Busqueda a partir del indice
-		Searcher searcher = new Searcher();
-		//TopDocs hits = searcher.search(indexPath, 100,q);
-
-		TopDocs hits = searcher.search(indexPath, 10,q);
-
-		System.out.println("Busqueda terminada");
-		System.out.println("Cantidad de hits: " + hits.totalHits);
-
-		for (ScoreDoc sd : hits.scoreDocs) {
-			System.out.println(searcher.doc(sd.doc).get("ThreadID")+": "+sd.score+"   ");
-		}
-		 */
-		/*try {
-			Evaluator eval = new Evaluator("Forum_Data\\queryRelJudgements");
-			eval.calculateRecall10k("virtualbox keyboard problem", hits, searcher);
-			eval.calculatePrecision10k("virtualbox keyboard problem", hits, searcher);
-			eval.calculateNDCG("virtualbox keyboard problem", hits, searcher);
-
-			System.out.println("Recall: " + eval.getRecall10k());
-			System.out.println("Precision: " + eval.getPrecision10k());
-			System.out.println("NDCG: " + eval.getNdcg());
-
+		try {
+			prueba.HashToFile();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
-
+		}
 	}
 }
