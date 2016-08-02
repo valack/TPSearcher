@@ -733,24 +733,10 @@ public class TPSearcher extends JFrame {
 	
 
 	public static void main(String[] args) {
-/*
 		frame = new TPSearcher();
 		frame.setResizable(false);
 		frame.setVisible(true);
-	*/	
-		System.out.println("Arranco el sentiment analizer ----------------------");
-		SentimentAnalyzer prueba = new SentimentAnalyzer();
-		try {
-			prueba.calculateThreadsSentiment("F:\\Facultad\\Optativas\\Analisis y recuperacion de informacion\\Forum_Data\\All");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
-			prueba.HashToFile();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		
 	}
 }

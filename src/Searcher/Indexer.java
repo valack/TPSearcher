@@ -26,10 +26,12 @@ public class Indexer {
 
 	//Atributos
 	private IndexWriter writer = null;
+	XMLdocsParser dataParser; 
 	//Metodos
 
 	//Constructor
 	public Indexer(){		
+		dataParser = new XMLdocsParser();
 	}
 	
 
@@ -48,7 +50,6 @@ public class Indexer {
 	//Indexa un documento
 	private void atomIndex(String xmlPath, String indexPath){
 		
-		XMLdocsParser dataParser = new XMLdocsParser();
 		Document thread = dataParser.parse(xmlPath);
 		try {
 			writer.addDocument(thread);
@@ -56,7 +57,7 @@ public class Indexer {
 			JOptionPane.showMessageDialog(null,"Error al agregar el documento"+thread.get("Path"));
 			e.printStackTrace();
 		}	
-		TPSearcher.indexLog("  - Documento "+thread.get("ThreadID")+" agregado al indice");
+		TPSearcher.indexLog("  - Documento "+thread.get("ThreadID")+" agregado al indice, Sentimiento: "+thread.get("Sentiment"));
 
 	}
 
