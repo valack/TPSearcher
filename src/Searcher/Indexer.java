@@ -85,7 +85,7 @@ public class Indexer {
 		//Por cada archivo en el directorio
 		
 	
-		for (int x=0; x<directories.length; x++)	{
+		for (int x = 0; x < directories.length; x++)	{
 			// Path contiene la ruta raiz mas las carpetas y archivos
 			String path = xmlPath+"\\"+directories[x].getName(); 
 			

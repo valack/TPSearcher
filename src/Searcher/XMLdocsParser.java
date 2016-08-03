@@ -104,10 +104,11 @@ public class XMLdocsParser {
 		thread.add(new TextField("Title",title,Field.Store.YES));
 		thread.add(new TextField("Path",path,Field.Store.YES));
 		thread.add(new TextField("ThreadID",threadId,Field.Store.YES));
-		thread.add(new TextField("Content",content,Field.Store.NO));
 		thread.add(new TextField("Sentiment",sentiment.toString(),Field.Store.YES));
 		thread.add(new TextField("PageRank","" ,Field.Store.YES));
+		thread.add(new TextField("Content",content,Field.Store.NO));
 		
+		System.gc();
 		
 		return thread;
 	}

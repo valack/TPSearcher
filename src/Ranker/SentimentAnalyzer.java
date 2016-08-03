@@ -45,13 +45,15 @@ public class SentimentAnalyzer {
 				sentiment = sentence.get(SentimentCoreAnnotations.SentimentClass.class);
 				switch (sentiment) {
 				case "Positive":
-					PosCount++;
+					//Se le da mas relevancia cuando se encuentra una sentencia positiva
+					PosCount+=2;
 					break;
 				case "Negative":
 					NegCount++;
 					break;
 				case "Neutral":
-					NeuCount++;
+					//Se le da mas relevancia cuando se encuentra una sentencia neutral
+					NeuCount+=2;
 					break;
 				default:
 					break;
