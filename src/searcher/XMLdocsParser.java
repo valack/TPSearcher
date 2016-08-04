@@ -1,4 +1,4 @@
-package Searcher;
+package searcher;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,7 +15,7 @@ import org.apache.tika.parser.html.HtmlParser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.xml.sax.SAXException;
 
-import Ranker.SentimentAnalyzer;
+import ranker.SentimentAnalyzer;
 
 /***
 *

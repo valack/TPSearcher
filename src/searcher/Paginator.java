@@ -1,4 +1,4 @@
-package Searcher;
+package searcher;
 
 /***
  * 

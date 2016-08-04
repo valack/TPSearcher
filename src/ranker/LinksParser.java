@@ -1,4 +1,4 @@
-package Ranker;
+package ranker;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

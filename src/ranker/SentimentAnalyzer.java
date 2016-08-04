@@ -1,4 +1,4 @@
-package Ranker;
+package ranker;
 
 import java.util.List;
 import java.util.Properties;

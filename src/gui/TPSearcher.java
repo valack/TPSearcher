@@ -16,14 +16,15 @@ import org.apache.lucene.search.TopDocs;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
-import Ranker.LinksParser;
-import Ranker.SentimentAnalyzer;
-import Searcher.Indexer;
-import Searcher.Paginator;
-import Searcher.Searcher;
 import edu.stanford.nlp.simple.Document;
 import edu.stanford.nlp.simple.Sentence;
 import evaluator.Evaluator;
+import ranker.LinksParser;
+import ranker.PageRanker;
+import ranker.SentimentAnalyzer;
+import searcher.Indexer;
+import searcher.Paginator;
+import searcher.Searcher;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -736,10 +737,11 @@ public class TPSearcher extends JFrame {
 	
 
 	public static void main(String[] args) {
-		frame = new TPSearcher();
-		frame.setResizable(false);
-		frame.setVisible(true);
-		
+//		frame = new TPSearcher();
+//		frame.setResizable(false);
+//		frame.setVisible(true);
+		PageRanker pr = new PageRanker("F:\\Facultad\\Optativas\\Analisis y recuperacion de informacion\\Forum_Data\\All");
+		pr.showAllPageRank();
 		
 	}
 }

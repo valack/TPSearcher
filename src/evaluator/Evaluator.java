@@ -10,7 +10,7 @@ import java.lang.Math;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 
-import Searcher.Searcher;
+import searcher.Searcher;
 
 /***
 *
