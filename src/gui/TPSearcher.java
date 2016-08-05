@@ -222,8 +222,8 @@ public class TPSearcher extends JFrame {
 						/*
 						 * FALTA PASARLE EL CAMINO DEL ARCHIVO DE LINKS AL INDEXADOR
 						 */
-//						Indexer indexer = new Indexer();
-//						indexer.index(xmlPath,indexPath);
+						Indexer indexer = new Indexer("Forum_Data\\linkData");
+						indexer.index(xmlPath,indexPath,"Forum_Data\\linkData");
 						JOptionPane.showMessageDialog(null,"Fin del proceso de indexado");
 						lblLoading.setVisible(false);
 					}

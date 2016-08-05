@@ -90,6 +90,7 @@ public class Ranker extends Similarity{
 			
 			try {
 				sentimentValue = Double.valueOf(contextReader.reader().document(doc).get("sentiment"));
+				System.out.println("SCORING del thread:" + contextReader.reader().document(doc).get("ThreadId") + "ls:" + luceneScore + " pr:"+ pageRank + " sv:" + sentimentValue);
 			} catch (NumberFormatException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
