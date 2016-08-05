@@ -95,7 +95,7 @@ public class Ranker extends Similarity{
 				e.printStackTrace();
 			}
 			
-			return (float) (luceneScore * 0.3 + pageRank * 0.6 + sentimentValue * 0.1);
+			return (float) (luceneScore * 0.5 + pageRank * 0.4 + sentimentValue * 0.1);
 		}
 
 		@Override
