@@ -5,24 +5,21 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
+import edu.uci.ics.jung.graph.DirectedSparseGraph;
 
 
 
 public class LinksParser {
 
-	//private String linkDataPath = "F:\\workspace\\TPSearcher\\Forum_Data\\linkData";
+	private DirectedSparseGraph<String, Integer> graph; 
 
 
 	public LinksParser() {
-		//this.linkDataPath = linkDataPath;
+		graph = new DirectedSparseGraph<String, Integer>();
 	}
 
-	public DirectedGraph<String, DefaultEdge> parse(String linkDataPath)	{
-		DirectedGraph<String, DefaultEdge> graph = new DefaultDirectedGraph<String, DefaultEdge>(DefaultEdge.class);
+	public DirectedSparseGraph<String, Integer> parse(String linkDataPath)	{
+		int edgeCount = 0;
 		FileReader fileToRead = null;
 		try {
 			fileToRead = new FileReader(linkDataPath);
@@ -47,7 +44,7 @@ public class LinksParser {
 //				System.out.println("Source: "+source+" Agregado al grafo");
 				graph.addVertex(target);
 //				System.out.println("Target: "+target+" Agregado al grafo");
-				graph.addEdge(source, target);
+				graph.addEdge(new Integer(edgeCount++), source, target);
 //				System.out.println("cantidad de links "+graph.edgeSet().size());
 //				System.out.println(graph.toString());
 			}

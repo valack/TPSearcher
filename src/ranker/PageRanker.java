@@ -1,47 +1,44 @@
 package ranker;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Set;
-
-import javax.swing.JOptionPane;
-
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
-
 import edu.uci.ics.jung.algorithms.scoring.PageRank;
-
+import edu.uci.ics.jung.graph.DirectedSparseGraph;
 
 public class PageRanker {
 
 	LinksParser parser;
-	DirectedGraph<String, DefaultEdge> threadLinks;
-	PageRank<DirectedGraph<String, DefaultEdge>, Float> pageRanker;
+	DirectedSparseGraph<String, Integer> threadLinks;
+	
+	PageRank<String, Integer> pageRanker;
 	
 	final float jumpProb = (float) 0.15;
+	final float maxTolerance = (float) 0.00000000001;
+
 	
-	public PageRanker(String threadsPath) {
+	public PageRanker(String linksPath) {
 		
 		parser 		= 	new LinksParser();
-		threadLinks =	parser.parse("F:\\workspace\\TPSearcher\\Forum_Data\\linkData");
-		PageRank<DirectedGraph<String, DefaultEdge>, Float>  pageRanker = new PageRank<>(threadLinks, jumpProb);
+		threadLinks =	parser.parse(linksPath);
+		pageRanker  = new PageRank<String, Integer>(threadLinks, jumpProb);
+		pageRanker.setTolerance(maxTolerance);
 		pageRanker.evaluate();
 		
 	}
-
-	public void showAllPageRank(){
-		System.out.println(pageRanker.toString());
-	}
-//	
-//	public Float getRankValue (String threadID){
-//		if ( !threadLinks.containsVertex(threadID) )
-//			return (float) 0;
+//
+//	public void showAllPageRank(){
+//		System.out.println(threadLinks.toString());
 //		
-//		return pageRanker.getVertexScore(threadID);
+//		String[] vertices = {"733868","537777","928963","744517","631835","480314","467336","528820","683034","960219","651451","671065","753467","584992","511131","482963","1021254","736901","536456" };
+//		
+//		for (int i = 0; i < vertices.length; i++) {	
+//			System.out.println("rank: "+pageRanker.getVertexScore(vertices[i]));
+//		}
 //	}
+	
+	public Double getRankValue (String threadID){
+		if ( !threadLinks.containsVertex(threadID) )
+			return (double) 0;
+		
+		return pageRanker.getVertexScore(threadID);
+	}
 	
 }

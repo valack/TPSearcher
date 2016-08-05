@@ -22,7 +22,11 @@
 	<classpathentry kind="lib" path="F:/workspace/TPSearcher/lib/stanford-corenlp/stanford-corenlp-3.6.0-sources.jar"/>
 	<classpathentry kind="lib" path="F:/workspace/TPSearcher/lib/stanford-corenlp/xom.jar"/>
 	<classpathentry kind="lib" path="F:/workspace/TPSearcher/lib/stanford-corenlp/xom-1.2.10-src.jar"/>
-	<classpathentry kind="lib" path="F:/workspace/TPSearcher/lib/jgrapht-core-0.9.2.jar"/>
 	<classpathentry kind="lib" path="F:/workspace/TPSearcher/lib/jung-algorithms.jar"/>
+	<classpathentry kind="lib" path="F:/workspace/TPSearcher/lib/jung-api-2.0.jar"/>
+	<classpathentry kind="lib" path="F:/workspace/TPSearcher/lib/jung-graph-impl-2.0.1.jar"/>
+	<classpathentry kind="lib" path="F:/workspace/TPSearcher/lib/commons-collections4-4.1.jar"/>
+	<classpathentry kind="lib" path="F:/workspace/TPSearcher/lib/poi-3.15-beta2.jar"/>
+	<classpathentry kind="lib" path="F:/workspace/TPSearcher/lib/collections-generic-4.01.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

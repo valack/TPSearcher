@@ -13,8 +13,6 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
 
 import edu.stanford.nlp.simple.Document;
 import edu.stanford.nlp.simple.Sentence;
@@ -221,8 +219,11 @@ public class TPSearcher extends JFrame {
 					public void run()
 					{
 						lblLoading.repaint();
-						Indexer indexer = new Indexer();
-						indexer.index(xmlPath,indexPath);
+						/*
+						 * FALTA PASARLE EL CAMINO DEL ARCHIVO DE LINKS AL INDEXADOR
+						 */
+//						Indexer indexer = new Indexer();
+//						indexer.index(xmlPath,indexPath);
 						JOptionPane.showMessageDialog(null,"Fin del proceso de indexado");
 						lblLoading.setVisible(false);
 					}
@@ -325,8 +326,8 @@ public class TPSearcher extends JFrame {
 				}else{
 					String searchText = txtSearchB.getText();
 					
-					searcher = new Searcher();
-					hits = searcher.search(txtIndexPathB.getText(), maxHits, searchText);
+					searcher = new Searcher(txtIndexPathB.getText());
+					hits = searcher.search(maxHits, searchText);
 					paginator.Paginate(maxHits , 5);
 					
 					if (hits.totalHits == 0){
@@ -585,11 +586,11 @@ public class TPSearcher extends JFrame {
 					String txtResult     = "<html>\n";
 					String selectedQuery = seleccionQuery.getSelectedItem().toString();
 
-					Searcher evalSearcher = new Searcher();
+					Searcher evalSearcher = new Searcher(txtIndexPathE.getText());
 					
 					//evalSearcher.setQuery(seleccionCampo.getSelectedItem().toString(), selectedQuery);
 					
-					TopDocs evalHits = evalSearcher.search(txtIndexPathE.getText(), 10,selectedQuery);
+					TopDocs evalHits = evalSearcher.search(10,selectedQuery);
 					Evaluator eval   = null;
 					
 					try {
@@ -737,11 +738,9 @@ public class TPSearcher extends JFrame {
 	
 
 	public static void main(String[] args) {
-//		frame = new TPSearcher();
-//		frame.setResizable(false);
-//		frame.setVisible(true);
-		PageRanker pr = new PageRanker("F:\\Facultad\\Optativas\\Analisis y recuperacion de informacion\\Forum_Data\\All");
-		pr.showAllPageRank();
+		frame = new TPSearcher();
+		frame.setResizable(false);
+		frame.setVisible(true);
 		
 	}
 }

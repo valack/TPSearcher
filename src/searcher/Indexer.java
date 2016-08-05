@@ -14,6 +14,8 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
 import gui.TPSearcher;
+import ranker.PageRanker;
+import ranker.Ranker;
 
 /***
 *
@@ -25,22 +27,28 @@ import gui.TPSearcher;
 public class Indexer {
 
 	//Atributos
-	private IndexWriter writer = null;
+	IndexWriter writer = null;
 	XMLdocsParser dataParser; 
+	
 	//Metodos
 
 	//Constructor
-	public Indexer(){		
-		dataParser = new XMLdocsParser();
+	public Indexer(String linkDataPath){		
+		dataParser = new XMLdocsParser(linkDataPath);
 	}
 	
 
 	//Si existe el indice lo devuelve y sino lo crea
 	public IndexWriter getIndexWriter(boolean create, String indexPath) throws IOException {
 		if (writer == null) {
+			//Creo el camino donde voy a ubicar el indice
 			Path path = Paths.get(indexPath);
 			Directory indexDir = FSDirectory.open(path);
+			//Creo la configuracion del indexwriter con nuestras similaridades
+			Ranker ranker = new Ranker();
 			IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+			config.setSimilarity(ranker);
+			//Creo el indexwriter con la configuracion y el destino donde se ubicará
 			writer = new IndexWriter(indexDir, config);
 		}
 		return writer;
@@ -53,6 +61,7 @@ public class Indexer {
 		Document thread = dataParser.parse(xmlPath);
 		try {
 			writer.addDocument(thread);
+			
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null,"Error al agregar el documento"+thread.get("Path"));
 			e.printStackTrace();
@@ -62,8 +71,8 @@ public class Indexer {
 	}
 
 	//Recorre el directorio dado e indexa los archivos xml encontrados
-	public void index (String xmlPath, String indexPath){
-
+	public void index (String xmlPath, String indexPath, String linkDataPath){
+		
 		//Verifica que exista el directorio raiz de los archivos
 		File f = new File(xmlPath);
 		if (!f.exists()){ 
